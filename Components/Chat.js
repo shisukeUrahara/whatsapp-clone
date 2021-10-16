@@ -11,12 +11,14 @@ import { useRouter } from "next/router";
 function Chat({ id, users }) {
   const [user] = useAuthState(auth);
   const router = useRouter();
+
+  const recipientEmail = getRecipientEmail(users, user);
+
   const [recipientSnapshot] = useCollection(
-    db.collection("users", "==", getRecipientEmail(users, user))
+    db.collection("users").where("email", "==", recipientEmail)
   );
 
   const recipient = recipientSnapshot?.docs?.[0]?.data();
-  const recipientEmail = getRecipientEmail(users, user);
 
   const enterChat = async () => {
     router.push(`/chat/${id}`);
